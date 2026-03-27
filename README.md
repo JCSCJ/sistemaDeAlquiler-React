@@ -2,111 +2,184 @@
 
 ## 📋 Descripción del Proyecto
 
-Aplicación web desarrollada con React para la gestión integral de un negocio de alquiler de atuendos. El sistema permite administrar clientes, empleados, prendas y el flujo completo del proceso de alquiler, desde el registro inicial hasta la devolución y gestión de lavandería.
+Aplicación web fullstack para la gestión integral de un negocio de alquiler de atuendos. Desarrollada con **React** en el frontend y **Spring Boot** en el backend, con persistencia real en base de datos H2. El sistema implementa patrones de diseño y de comportamiento para garantizar una arquitectura limpia, escalable y mantenible.
 
-## ✨ Características Principales
+---
 
-### 🎯 Módulos del Sistema
+## 🏗️ Arquitectura
 
-#### **Gestión de Registros**
-* **Clientes**: Registro y administración de clientes
-* **Empleados**: Gestión del personal
-* **Prendas**: Control de inventario de atuendos
+```
+LosAtuendosApp/
+├── frontend-react/        → React + Material UI
+└── backend-springboot/    → Spring Boot + JPA + H2
+```
 
-#### **Proceso de Alquiler**
-* Registro de nuevos alquileres seleccionando:
-  * Cliente
-  * Empleado responsable
-  * Prenda a alquilar
-  * Fecha de alquiler
-* Visualización de alquileres activos
-* Seguimiento de estado de las prendas
+### Patrones de Diseño implementados
 
-#### **Devoluciones**
-* Transferencia de alquileres activos a terminados
-* Registro de fecha de devolución
-* Actualización automática del estado de la prenda a "sucio"
+| Patrón | Tipo | Ubicación |
+|---|---|---|
+| Factory Method | Creacional | `AlquilerFactory`, `PrendaFactory` |
+| Singleton | Creacional | `ContadorAlquilerSingleton` |
+| Composite | Estructural | `GrupoPrendas`, `PrendaHoja`, `ComponenteInventario` |
+| Adapter | Estructural | `ClienteAdapter`, `ClienteExternoDto` |
+| Decorator | Estructural | `LoggingAlquilerDecorator`, `AlquilerServiceI` |
+| Observer | Comportamiento | `GestorEventosPrenda`, `NotificadorCliente`, `NotificadorEmpleado` |
+| Strategy | Comportamiento | `ContextoPago`, `PagoEfectivo`, `PagoTarjeta`, `PagoTransferencia` |
+| Command | Comportamiento | `GestorComandos`, `CrearAlquilerComando`, `TerminarAlquilerComando`, `CancelarAlquilerComando` |
+| Iterator | Comportamiento | `IteradorPrendas`, `ColeccionPrendas` |
 
-#### **Gestión de Lavandería**
-* Visualización de prendas pendientes de lavado
-* Asignación de prioridad a prendas
-* Registro de envío a lavandería
-* Control de retorno de prendas (disponibles nuevamente)
+---
 
-#### **Panel de Control**
-  * Total de prendas
-  * Total de empleados
-  * Total de clientes
-  * Alquileres activos
-  * Prendas en lavandería
+## ✨ Módulos del Sistema
 
-## 🚀 Flujo de Trabajo
+### 👥 Gestión de Registros
+- **Clientes** — Registro, búsqueda y consulta de historial de alquileres por cliente
+- **Empleados** — Gestión del personal responsable de cada alquiler
+- **Prendas** — Control de inventario con seguimiento de estado en tiempo real
 
-1. **Registro Inicial** → Ingreso de clientes, empleados y prendas
-2. **Alquiler** → Selección de cliente, empleado, prenda y fecha
-3. **Prenda Ocupada** → Cambio automático de estado en inventario
-4. **Devolución** → Registro de fecha y paso a "sucio"
-5. **Lavandería** → Gestión de limpieza y prioridades
-6. **Disponible** → Retorno al inventario disponible
+### 🛍️ Proceso de Alquiler
+- Registro de alquileres seleccionando cliente, empleado, prendas y fecha
+- Selección de método de pago (efectivo, tarjeta, transferencia) — patrón **Strategy**
+- Visualización de alquileres activos y terminados
+- Cancelación de alquileres activos
 
-## 💻 Tecnologías Utilizadas
+### 📦 Devoluciones
+- Marcado de alquileres como devueltos
+- Registro automático de fecha de devolución
+- Cambio de estado de prendas a "sucia" al devolver
 
-* **React** - Framework frontend
-* **React Hooks** - Gestión de estado
-* **CSS Modules** - Estilizado de componentes
-* **LocalStorage** - Persistencia de datos (cache)
+### 🧺 Gestión de Lavandería
+- Envío de prendas sucias a lavandería con o sin prioridad
+- Visualización de prendas en proceso de lavado
+- Retorno de prendas lavadas al inventario como "disponible"
 
-## 🎨 Estructura de Estados de Prendas
+### 📊 Panel de Control
+- Total de clientes, empleados y prendas registradas
+- Alquileres activos en curso
+- Prendas actualmente en lavandería
 
-* `Disponible` - Lista para alquilar
-* `Ocupada` - Actualmente alquilada
-* `Sucio` - Pendiente de lavado
-* `Lavandería` - En proceso de limpieza
-* `Lavandería (Prioridad)` - En lavandería con prioridad
+---
 
-## 🔄 Estado del Proyecto
+## 🎨 Estados de Prendas
 
-✅ **Frontend**: Completamente funcional  
-⚠️ **Backend**: Pendiente de implementación (Planificado con Spring Boot y H2)
+| Estado | Descripción |
+|---|---|
+| `disponible` | Lista para alquilar |
+| `ocupada` | Actualmente alquilada |
+| `sucia` | Pendiente de lavado tras devolución |
+| `lavanderia` | En proceso de limpieza |
+| `lavanderia(prioridad)` | En lavandería con prioridad |
 
-### Próximos Pasos
-- [ ] Implementación de API REST con Spring Boot
-- [ ] Integración con base de datos H2
-- [ ] Sistema de autenticación
-- [ ] Reportes y estadísticas avanzadas
+---
 
-## 💾 Persistencia de Datos
+## 🚀 Instalación y ejecución
 
-Actualmente, la aplicación utiliza el almacenamiento en caché del navegador (LocalStorage) para mantener los datos, permitiendo una experiencia de usuario completa mientras se desarrolla el backend.
+### Requisitos previos
+- **Java 21+**
+- **Node.js 18+**
+- **Maven** (o usar el wrapper `mvnw` incluido)
 
-## 📦 Instalación
+### 1. Clonar el repositorio
 
 ```bash
-# Clonar el repositorio
-git clone https://github.com/tuusuario/sistemaDeAlquiler-React.git
+git clone https://github.com/JCSCJ/sistemaDeAlquiler-React.git
+cd LosAtuendosApp
+```
 
-# Entrar al directorio
+### 2. Iniciar el Backend
+
+```bash
+cd backend-springboot
+
+# Linux / Mac
+./mvnw spring-boot:run
+
+# Windows
+mvnw.cmd spring-boot:run
+```
+
+El backend quedará disponible en `http://localhost:8080`
+
+La consola H2 para inspeccionar la base de datos estará en:
+```
+http://localhost:8080/h2-console
+JDBC URL: jdbc:h2:mem:testdb
+User: sa
+Password: (vacío)
+```
+
+### 3. Iniciar el Frontend
+
+En otra terminal:
+
+```bash
 cd frontend-react
-
-# Instalar dependencias
-npm install
-
-# Iniciar la aplicación
+npm install      # solo la primera vez
 npm start
 ```
 
-## 🖥️ Uso
+La aplicación quedará disponible en `http://localhost:3000`
 
-1. Registra clientes, empleados y prendas en sus respectivas secciones
-2. Ve a la pestaña "Alquiler" para crear nuevos alquileres
-3. Monitorea los alquileres activos en la tabla correspondiente
-4. Gestiona devoluciones y envía prendas a lavandería
-5. Utiliza el panel de control para visualizar estadísticas
+> ⚠️ El backend debe estar corriendo antes de usar el frontend.
 
+---
 
-## 📝 Notas Adicionales
+## 🔌 Endpoints del Backend
 
-* La aplicación está diseñada para ser intuitiva y fácil de usar
-* Los cambios de estado son automáticos según el flujo del proceso
-* Se mantiene un registro histórico de alquileres terminados
-* El sistema de prioridades optimiza el proceso de lavandería
+| Método | URL | Descripción |
+|---|---|---|
+| GET | `/clientes` | Listar clientes |
+| POST | `/clientes` | Registrar cliente |
+| GET | `/empleados` | Listar empleados |
+| POST | `/empleados` | Registrar empleado |
+| GET | `/prendas` | Listar prendas |
+| POST | `/prendas` | Registrar prenda |
+| PATCH | `/prendas/{id}/estado` | Cambiar estado de prenda |
+| GET | `/prendas/talla/{talla}` | Filtrar por talla |
+| GET | `/alquileres/activos` | Alquileres en curso |
+| GET | `/alquileres/terminados` | Alquileres finalizados |
+| GET | `/alquileres/cliente/{id}` | Alquileres por cliente |
+| POST | `/alquileres` | Registrar alquiler |
+| PUT | `/alquileres/{id}/terminar` | Devolver prendas y cerrar alquiler |
+| PUT | `/alquileres/{id}/cancelar` | Cancelar alquiler |
+| GET | `/alquileres/historial` | Historial de comandos ejecutados |
+| GET | `/lavanderia` | Prendas en lavandería |
+| POST | `/lavanderia` | Enviar prenda a lavandería |
+| DELETE | `/lavanderia/{id}` | Marcar prenda como lavada |
+
+---
+
+## 🔄 Flujo de Trabajo
+
+1. **Registro** → Ingresar clientes, empleados y prendas
+2. **Alquiler** → Seleccionar cliente, empleado, prendas, fecha y método de pago
+3. **Prenda ocupada** → Estado actualizado automáticamente en inventario
+4. **Devolución** → Registro de fecha y cambio a estado "sucia"
+5. **Lavandería** → Gestión de limpieza con prioridades
+6. **Disponible** → Retorno automático al inventario
+
+---
+
+## 💻 Tecnologías
+
+### Frontend
+- **React 18** — Framework UI
+- **Material UI (MUI)** — Componentes de interfaz
+- **React Router** — Navegación entre páginas
+- **Fetch API** — Comunicación con el backend
+
+### Backend
+- **Spring Boot 3** — Framework principal
+- **Spring Data JPA** — Persistencia y repositorios
+- **H2 Database** — Base de datos en memoria
+- **Lombok** — Reducción de código boilerplate
+- **Hibernate** — ORM para mapeo de entidades
+
+---
+
+## 📝 Notas
+
+- Los datos persisten mientras el backend esté corriendo. Al reiniciarlo la base de datos H2 se reinicia (es en memoria).
+- El historial de comandos (`GET /alquileres/historial`) también se reinicia con cada arranque del backend.
+- Cada cambio de estado de una prenda genera una notificación en los logs del backend (patrón Observer).
+- Si se desea persistencia permanente, se puede cambiar H2 por MySQL o PostgreSQL en `application.properties`.
